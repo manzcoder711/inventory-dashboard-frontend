@@ -1,0 +1,53 @@
+<h2>Add Product</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="name">Name</label>
+    <input id="name" type="text" formControlName="name" />
+    @if (form.controls.name.invalid && form.controls.name.touched) {
+      <span class="field-error">Name is required (max 200 characters).</span>
+    }
+  </div>
+
+  <div>
+    <label for="description">Description</label>
+    <textarea id="description" formControlName="description"></textarea>
+  </div>
+
+  <div>
+    <label for="sku">SKU</label>
+    <input id="sku" type="text" formControlName="sku" />
+    @if (form.controls.sku.invalid && form.controls.sku.touched) {
+      <span class="field-error">SKU is required (max 100 characters).</span>
+    }
+  </div>
+
+  <div>
+    <label for="price">Price</label>
+    <input id="price" type="number" step="0.01" formControlName="price" />
+    @if (form.controls.price.invalid && form.controls.price.touched) {
+      <span class="field-error">Price must be 0 or greater.</span>
+    }
+  </div>
+
+  <div>
+    <label for="quantityInStock">Quantity in Stock</label>
+    <input id="quantityInStock" type="number" formControlName="quantityInStock" />
+    @if (form.controls.quantityInStock.invalid && form.controls.quantityInStock.touched) {
+      <span class="field-error">Quantity must be 0 or greater.</span>
+    }
+  </div>
+
+  <div>
+    <label for="category">Category</label>
+    <input id="category" type="text" formControlName="category" />
+  </div>
+
+  @if (error()) {
+    <p class="form-error">{{ error() }}</p>
+  }
+
+  <button type="submit" [disabled]="submitting()">
+    {{ submitting() ? 'Saving...' : 'Save Product' }}
+  </button>
+</form>
