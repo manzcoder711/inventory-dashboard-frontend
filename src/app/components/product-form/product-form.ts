@@ -1,6 +1,6 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 
 @Component({
@@ -9,12 +9,15 @@ import { ProductService } from '../../services/product.service';
   styleUrl: './product-form.scss',
   templateUrl: './product-form.html',
 })
-export class ProductForm {
+export class ProductForm implements OnInit {
   private fb = inject(FormBuilder);
   private productService = inject(ProductService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
+  productId = signal<number | null>(null);
   submitting = signal(false);
+  loading = signal(false);
   error = signal<string | null>(null);
 
   form = this.fb.group({
@@ -26,6 +29,36 @@ export class ProductForm {
     category: ['', [Validators.maxLength(100)]],
   });
 
+  ngOnInit(): void {
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (!idParam) {
+      return;
+    }
+
+    const id = Number(idParam);
+    this.productId.set(id);
+    this.loading.set(true);
+
+    this.productService.getById(id).subscribe({
+      next: (product) => {
+        this.form.patchValue({
+          name: product.name,
+          description: product.description,
+          sku: product.sku,
+          price: product.price,
+          quantityInStock: product.quantityInStock,
+          category: product.category,
+        });
+        this.loading.set(false);
+      },
+      error: (err) => {
+        this.error.set('Failed to load product.');
+        this.loading.set(false);
+        console.error(err);
+      },
+    });
+  }
+
   onSubmit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -36,24 +69,29 @@ export class ProductForm {
     this.error.set(null);
 
     const raw = this.form.getRawValue();
-    this.productService
-      .create({
-        name: raw.name!,
-        description: raw.description || null,
-        sku: raw.sku!,
-        price: raw.price!,
-        quantityInStock: raw.quantityInStock!,
-        category: raw.category || null,
-      })
-      .subscribe({
-        next: () => {
-          this.router.navigate(['/']);
-        },
-        error: (err) => {
-          this.error.set('Failed to create product.');
-          this.submitting.set(false);
-          console.error(err);
-        },
-      });
+    const payload = {
+      name: raw.name!,
+      description: raw.description || null,
+      sku: raw.sku!,
+      price: raw.price!,
+      quantityInStock: raw.quantityInStock!,
+      category: raw.category || null,
+    };
+
+    const id = this.productId();
+    const request = id
+      ? this.productService.update(id, { id, ...payload })
+      : this.productService.create(payload);
+
+    request.subscribe({
+      next: () => {
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        this.error.set(id ? 'Failed to update product.' : 'Failed to create product.');
+        this.submitting.set(false);
+        console.error(err);
+      },
+    });
   }
 }

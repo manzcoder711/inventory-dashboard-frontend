@@ -13,6 +13,7 @@
       <th>Price</th>
       <th>Quantity</th>
       <th>Category</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -22,6 +23,16 @@
       <td>{{ product.price | currency }}</td>
       <td>{{ product.quantityInStock }}</td>
       <td>{{ product.category }}</td>
+      <td>
+        <a [routerLink]="['/products', product.id, 'edit']">Edit</a>
+        <button
+          type="button"
+          (click)="deleteProduct(product)"
+          [disabled]="deletingId() === product.id"
+        >
+          {{ deletingId() === product.id ? 'Deleting...' : 'Delete' }}
+        </button>
+      </td>
     </tr>
   </tbody>
 </table>

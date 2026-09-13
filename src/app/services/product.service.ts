@@ -24,7 +24,7 @@ export class ProductService {
     return this.http.post<Product>(this.baseUrl, product);
   }
 
-  update(id: number, product: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>): Observable<Product> {
+  update(id: number, product: Omit<Product, 'createdAt' | 'updatedAt'>): Observable<Product> {
     return this.http.put<Product>(`${this.baseUrl}/${id}`, product);
   }
 

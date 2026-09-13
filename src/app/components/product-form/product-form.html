@@ -1,5 +1,8 @@
-<h2>Add Product</h2>
+<h2>{{ productId() ? 'Edit Product' : 'Add Product' }}</h2>
 
+@if (loading()) {
+  <p>Loading...</p>
+} @else {
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
   <div>
     <label for="name">Name</label>
@@ -48,6 +51,7 @@
   }
 
   <button type="submit" [disabled]="submitting()">
-    {{ submitting() ? 'Saving...' : 'Save Product' }}
+    {{ submitting() ? 'Saving...' : (productId() ? 'Update Product' : 'Save Product') }}
   </button>
 </form>
+}
