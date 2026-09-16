@@ -1,1 +1,48 @@
-/* You can add global styles to this file, and also import other style files */
+/* Design tokens — see DESIGN.md for the decisions behind these values.
+   Defined once here; components reference var(--token-name), never hardcode. */
+:root {
+  --color-surface: #FFFFFF;
+  --color-surface-alt: #F1F5F9;
+  --color-text: #1E293B;
+  --color-text-muted: #64748B;
+  --color-primary: #1D4ED8;
+  --color-destructive: #DC2626;
+  --color-accent: #D97706;
+
+  --font-family-base: -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-size-caption: 12px;
+  --font-size-body: 14px;
+  --font-size-base: 16px;
+  --font-size-subheading: 20px;
+  --font-size-heading: 24px;
+  --line-height-body: 1.5;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+}
+
+h1, h2, h3 {
+  color: var(--color-text);
+}
+
+a {
+  color: var(--color-primary);
+}
