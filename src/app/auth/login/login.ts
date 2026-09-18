@@ -3,6 +3,9 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 
+const DEMO_EMAIL = 'demo@example.com';
+const DEMO_PASSWORD = 'Demo123!';
+
 @Component({
   imports: [ReactiveFormsModule],
   selector: 'app-login',
@@ -13,6 +16,9 @@ export class Login {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+
+  readonly demoEmail = DEMO_EMAIL;
+  readonly demoPassword = DEMO_PASSWORD;
 
   submitting = signal(false);
   error = signal<string | null>(null);
@@ -28,12 +34,19 @@ export class Login {
       return;
     }
 
+    const raw = this.form.getRawValue();
+    this.attemptLogin(raw.email!, raw.password!);
+  }
+
+  loginAsDemo(): void {
+    this.attemptLogin(DEMO_EMAIL, DEMO_PASSWORD);
+  }
+
+  private attemptLogin(email: string, password: string): void {
     this.submitting.set(true);
     this.error.set(null);
 
-    const raw = this.form.getRawValue();
-
-    this.authService.login(raw.email!, raw.password!).subscribe({
+    this.authService.login(email, password).subscribe({
       next: () => {
         this.router.navigate(['/']);
       },

@@ -1,5 +1,14 @@
 <h2>Log In</h2>
 
+<p>You're looking at a live demo — feel free to add, edit, or delete products.</p>
+
+<button type="button" (click)="loginAsDemo()" [disabled]="submitting()">
+  {{ submitting() ? 'Signing in...' : 'Sign in as demo user' }}
+</button>
+<p class="demo-credentials">Demo credentials: {{ demoEmail }} / {{ demoPassword }}</p>
+
+<hr />
+
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
   <div>
     <label for="email">Email</label>
