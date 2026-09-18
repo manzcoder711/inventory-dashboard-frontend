@@ -1,11 +1,16 @@
-import { Component, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, computed, signal } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Product } from '../../models/product';
 import { ProductService } from '../../services/product.service';
 
+type SortColumn = 'name' | 'quantityInStock' | 'price';
+type SortDirection = 'asc' | 'desc';
+
+const LOW_STOCK_THRESHOLD = 10;
+
 @Component({
-  imports: [CommonModule, RouterLink],
+  imports: [CurrencyPipe, RouterLink],
   selector: 'app-product-list',
   styleUrl: './product-list.scss',
   templateUrl: './product-list.html',
@@ -15,6 +20,30 @@ export class ProductList implements OnInit {
   loading = signal(true);
   error = signal<string | null>(null);
   deletingId = signal<number | null>(null);
+  searchTerm = signal('');
+  sortColumn = signal<SortColumn>('name');
+  sortDirection = signal<SortDirection>('asc');
+
+  readonly displayedProducts = computed(() => {
+    const term = this.searchTerm().trim().toLowerCase();
+    const column = this.sortColumn();
+    const direction = this.sortDirection();
+
+    let list = this.products();
+    if (term) {
+      list = list.filter(
+        (p) => p.name.toLowerCase().includes(term) || p.sku.toLowerCase().includes(term),
+      );
+    }
+
+    return [...list].sort((a, b) => {
+      const result =
+        typeof a[column] === 'string'
+          ? (a[column] as string).localeCompare(b[column] as string)
+          : (a[column] as number) - (b[column] as number);
+      return direction === 'asc' ? result : -result;
+    });
+  });
 
   constructor(private productService: ProductService) {}
 
@@ -30,6 +59,30 @@ export class ProductList implements OnInit {
         console.error(err);
       },
     });
+  }
+
+  onSearch(value: string): void {
+    this.searchTerm.set(value);
+  }
+
+  setSort(column: SortColumn): void {
+    if (this.sortColumn() === column) {
+      this.sortDirection.update((d) => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      this.sortColumn.set(column);
+      this.sortDirection.set('asc');
+    }
+  }
+
+  sortIndicator(column: SortColumn): string {
+    if (this.sortColumn() !== column) {
+      return '';
+    }
+    return this.sortDirection() === 'asc' ? '▲' : '▼';
+  }
+
+  isLowStock(product: Product): boolean {
+    return product.quantityInStock <= LOW_STOCK_THRESHOLD;
   }
 
   deleteProduct(product: Product): void {

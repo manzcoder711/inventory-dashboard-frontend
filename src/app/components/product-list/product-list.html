@@ -2,37 +2,69 @@
 
 <a routerLink="/products/new">+ Add Product</a>
 
-<p *ngIf="loading()">Loading...</p>
-<p *ngIf="error()">{{ error() }}</p>
+<div class="toolbar">
+  <input
+    type="search"
+    placeholder="Search by name or SKU"
+    aria-label="Search by name or SKU"
+    #searchBox
+    (input)="onSearch(searchBox.value)"
+  />
+</div>
 
-<table *ngIf="!loading() && !error()">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>SKU</th>
-      <th>Price</th>
-      <th>Quantity</th>
-      <th>Category</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let product of products()">
-      <td>{{ product.name }}</td>
-      <td>{{ product.sku }}</td>
-      <td>{{ product.price | currency }}</td>
-      <td>{{ product.quantityInStock }}</td>
-      <td>{{ product.category }}</td>
-      <td>
-        <a [routerLink]="['/products', product.id, 'edit']">Edit</a>
-        <button
-          type="button"
-          (click)="deleteProduct(product)"
-          [disabled]="deletingId() === product.id"
-        >
-          {{ deletingId() === product.id ? 'Deleting...' : 'Delete' }}
-        </button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+@if (loading()) {
+  <table class="skeleton" aria-hidden="true">
+    <tbody>
+      @for (row of [1, 2, 3, 4, 5]; track row) {
+        <tr>
+          <td colspan="6"><div class="skeleton-row"></div></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+} @else if (error()) {
+  <p class="form-error">{{ error() }}</p>
+} @else if (products().length === 0) {
+  <div class="empty-state">
+    <p>No products yet.</p>
+    <a routerLink="/products/new">Add your first product</a>
+  </div>
+} @else if (displayedProducts().length === 0) {
+  <p>No products match "{{ searchTerm() }}".</p>
+} @else {
+  <table>
+    <thead>
+      <tr>
+        <th (click)="setSort('name')" class="sortable">Name {{ sortIndicator('name') }}</th>
+        <th>SKU</th>
+        <th (click)="setSort('price')" class="sortable">Price {{ sortIndicator('price') }}</th>
+        <th (click)="setSort('quantityInStock')" class="sortable">
+          Quantity {{ sortIndicator('quantityInStock') }}
+        </th>
+        <th>Category</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (product of displayedProducts(); track product.id) {
+        <tr [class.low-stock]="isLowStock(product)">
+          <td>{{ product.name }}</td>
+          <td>{{ product.sku }}</td>
+          <td>{{ product.price | currency }}</td>
+          <td>{{ product.quantityInStock }}</td>
+          <td>{{ product.category }}</td>
+          <td>
+            <a [routerLink]="['/products', product.id, 'edit']">Edit</a>
+            <button
+              type="button"
+              (click)="deleteProduct(product)"
+              [disabled]="deletingId() === product.id"
+            >
+              {{ deletingId() === product.id ? 'Deleting...' : 'Delete' }}
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
