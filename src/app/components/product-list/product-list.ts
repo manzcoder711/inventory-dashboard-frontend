@@ -3,6 +3,7 @@ import { CurrencyPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Product } from '../../models/product';
 import { ProductService } from '../../services/product.service';
+import { ToastService } from '../../shared/toast/toast.service';
 
 type SortColumn = 'name' | 'quantityInStock' | 'price';
 type SortDirection = 'asc' | 'desc';
@@ -45,7 +46,10 @@ export class ProductList implements OnInit {
     });
   });
 
-  constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService,
+    private toastService: ToastService,
+  ) {}
 
   ngOnInit(): void {
     this.productService.getAll().subscribe({
@@ -96,6 +100,7 @@ export class ProductList implements OnInit {
       next: () => {
         this.products.update((products) => products.filter((p) => p.id !== product.id));
         this.deletingId.set(null);
+        this.toastService.show('Product deleted');
       },
       error: (err) => {
         this.error.set('Failed to delete product.');

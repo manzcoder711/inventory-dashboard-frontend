@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../../services/product.service';
+import { ToastService } from '../../shared/toast/toast.service';
 
 @Component({
   imports: [ReactiveFormsModule],
@@ -14,11 +15,13 @@ export class ProductForm implements OnInit {
   private productService = inject(ProductService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private toastService = inject(ToastService);
 
   productId = signal<number | null>(null);
   submitting = signal(false);
   loading = signal(false);
   error = signal<string | null>(null);
+  skuError = signal<string | null>(null);
 
   form = this.fb.group({
     name: ['', [Validators.required, Validators.maxLength(200)]],
@@ -67,6 +70,7 @@ export class ProductForm implements OnInit {
 
     this.submitting.set(true);
     this.error.set(null);
+    this.skuError.set(null);
 
     const raw = this.form.getRawValue();
     const payload = {
@@ -85,10 +89,15 @@ export class ProductForm implements OnInit {
 
     request.subscribe({
       next: () => {
+        this.toastService.show(id ? 'Product updated' : 'Product saved');
         this.router.navigate(['/']);
       },
       error: (err) => {
-        this.error.set(id ? 'Failed to update product.' : 'Failed to create product.');
+        if (err.status === 409) {
+          this.skuError.set(err.error?.message ?? 'That SKU is already in use.');
+        } else {
+          this.error.set(id ? 'Failed to update product.' : 'Failed to create product.');
+        }
         this.submitting.set(false);
         console.error(err);
       },

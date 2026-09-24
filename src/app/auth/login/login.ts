@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -50,8 +51,12 @@ export class Login {
       next: () => {
         this.router.navigate(['/']);
       },
-      error: () => {
-        this.error.set('Invalid email or password.');
+      error: (err: HttpErrorResponse) => {
+        this.error.set(
+          err.status === 401
+            ? 'Invalid email or password.'
+            : "Couldn't reach the server. Please try again in a moment.",
+        );
         this.submitting.set(false);
       },
     });

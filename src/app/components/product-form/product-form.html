@@ -19,8 +19,10 @@
 
   <div>
     <label for="sku">SKU</label>
-    <input id="sku" type="text" formControlName="sku" />
-    @if (form.controls.sku.invalid && form.controls.sku.touched) {
+    <input id="sku" type="text" formControlName="sku" (input)="skuError.set(null)" />
+    @if (skuError()) {
+      <span class="field-error">{{ skuError() }}</span>
+    } @else if (form.controls.sku.invalid && form.controls.sku.touched) {
       <span class="field-error">SKU is required (max 100 characters).</span>
     }
   </div>
