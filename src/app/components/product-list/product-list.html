@@ -23,7 +23,7 @@
     </tbody>
   </table>
 } @else if (error()) {
-  <p class="form-error">{{ error() }}</p>
+  <p class="form-error" role="alert">{{ error() }}</p>
 } @else if (products().length === 0) {
   <div class="empty-state">
     <p>No products yet.</p>
@@ -32,39 +32,56 @@
 } @else if (displayedProducts().length === 0) {
   <p>No products match "{{ searchTerm() }}".</p>
 } @else {
-  <table>
-    <thead>
-      <tr>
-        <th (click)="setSort('name')" class="sortable">Name {{ sortIndicator('name') }}</th>
-        <th>SKU</th>
-        <th (click)="setSort('price')" class="sortable">Price {{ sortIndicator('price') }}</th>
-        <th (click)="setSort('quantityInStock')" class="sortable">
-          Quantity {{ sortIndicator('quantityInStock') }}
-        </th>
-        <th>Category</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (product of displayedProducts(); track product.id) {
-        <tr [class.low-stock]="isLowStock(product)">
-          <td>{{ product.name }}</td>
-          <td>{{ product.sku }}</td>
-          <td>{{ product.price | currency }}</td>
-          <td>{{ product.quantityInStock }}</td>
-          <td>{{ product.category }}</td>
-          <td>
-            <a [routerLink]="['/products', product.id, 'edit']">Edit</a>
-            <button
-              type="button"
-              (click)="deleteProduct(product)"
-              [disabled]="deletingId() === product.id"
-            >
-              {{ deletingId() === product.id ? 'Deleting...' : 'Delete' }}
+  <div class="table-scroll" tabindex="0" role="region" aria-label="Products table">
+    <table>
+      <thead>
+        <tr>
+          <th [attr.aria-sort]="ariaSort('name')">
+            <button type="button" class="sort-button" (click)="setSort('name')">
+              Name <span aria-hidden="true">{{ sortIndicator('name') }}</span>
             </button>
-          </td>
+          </th>
+          <th>SKU</th>
+          <th [attr.aria-sort]="ariaSort('price')">
+            <button type="button" class="sort-button" (click)="setSort('price')">
+              Price <span aria-hidden="true">{{ sortIndicator('price') }}</span>
+            </button>
+          </th>
+          <th [attr.aria-sort]="ariaSort('quantityInStock')">
+            <button type="button" class="sort-button" (click)="setSort('quantityInStock')">
+              Quantity <span aria-hidden="true">{{ sortIndicator('quantityInStock') }}</span>
+            </button>
+          </th>
+          <th>Category</th>
+          <th>Actions</th>
         </tr>
-      }
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        @for (product of displayedProducts(); track product.id) {
+          <tr [class.low-stock]="isLowStock(product)">
+            <td>{{ product.name }}</td>
+            <td>{{ product.sku }}</td>
+            <td>{{ product.price | currency }}</td>
+            <td>
+              {{ product.quantityInStock }}
+              @if (isLowStock(product)) {
+                <span class="stock-badge">Low<span class="visually-hidden"> stock</span></span>
+              }
+            </td>
+            <td>{{ product.category }}</td>
+            <td class="row-actions">
+              <a [routerLink]="['/products', product.id, 'edit']">Edit</a>
+              <button
+                type="button"
+                (click)="deleteProduct(product)"
+                [disabled]="deletingId() === product.id"
+              >
+                {{ deletingId() === product.id ? 'Deleting...' : 'Delete' }}
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 }

@@ -12,22 +12,34 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
   <div>
     <label for="email">Email</label>
-    <input id="email" type="email" formControlName="email" />
-    @if (form.controls.email.invalid && form.controls.email.touched) {
-      <span class="field-error">A valid email is required.</span>
+    <input
+      id="email"
+      type="email"
+      formControlName="email"
+      [attr.aria-invalid]="showError('email') ? 'true' : null"
+      [attr.aria-describedby]="showError('email') ? 'email-error' : null"
+    />
+    @if (showError('email')) {
+      <span id="email-error" class="field-error">A valid email is required.</span>
     }
   </div>
 
   <div>
     <label for="password">Password</label>
-    <input id="password" type="password" formControlName="password" />
-    @if (form.controls.password.invalid && form.controls.password.touched) {
-      <span class="field-error">Password is required.</span>
+    <input
+      id="password"
+      type="password"
+      formControlName="password"
+      [attr.aria-invalid]="showError('password') ? 'true' : null"
+      [attr.aria-describedby]="showError('password') ? 'password-error' : null"
+    />
+    @if (showError('password')) {
+      <span id="password-error" class="field-error">Password is required.</span>
     }
   </div>
 
   @if (error()) {
-    <p class="form-error">{{ error() }}</p>
+    <p class="form-error" role="alert">{{ error() }}</p>
   }
 
   <button type="submit" [disabled]="submitting()">

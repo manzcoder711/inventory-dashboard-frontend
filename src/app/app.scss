@@ -1,0 +1,11 @@
+// Page gutter: keeps content off the screen edges (see DESIGN.md → Layout).
+:host {
+  display: block;
+  padding: var(--space-4);
+}
+
+@media (min-width: 768px) {
+  :host {
+    padding: var(--space-6);
+  }
+}

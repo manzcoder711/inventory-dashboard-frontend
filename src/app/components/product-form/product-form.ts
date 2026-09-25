@@ -32,6 +32,16 @@ export class ProductForm implements OnInit {
     category: ['', [Validators.maxLength(100)]],
   });
 
+  // Single source of truth for "is this field showing an error?" — drives both
+  // the visible message and the input's aria-invalid / aria-describedby.
+  showError(field: 'name' | 'sku' | 'price' | 'quantityInStock'): boolean {
+    if (field === 'sku' && this.skuError()) {
+      return true;
+    }
+    const control = this.form.controls[field];
+    return control.invalid && control.touched;
+  }
+
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
     if (!idParam) {

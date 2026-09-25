@@ -85,6 +85,13 @@ export class ProductList implements OnInit {
     return this.sortDirection() === 'asc' ? '▲' : '▼';
   }
 
+  ariaSort(column: SortColumn): 'ascending' | 'descending' | 'none' {
+    if (this.sortColumn() !== column) {
+      return 'none';
+    }
+    return this.sortDirection() === 'asc' ? 'ascending' : 'descending';
+  }
+
   isLowStock(product: Product): boolean {
     return product.quantityInStock <= LOW_STOCK_THRESHOLD;
   }

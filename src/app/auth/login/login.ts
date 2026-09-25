@@ -29,6 +29,12 @@ export class Login {
     password: ['', [Validators.required]],
   });
 
+  // Drives both the visible message and the input's aria-invalid / aria-describedby.
+  showError(field: 'email' | 'password'): boolean {
+    const control = this.form.controls[field];
+    return control.invalid && control.touched;
+  }
+
   onSubmit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();

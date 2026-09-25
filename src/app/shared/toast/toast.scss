@@ -2,8 +2,12 @@
   position: fixed;
   bottom: var(--space-6);
   right: var(--space-6);
+  // Keep the same gap on the left on narrow screens, so long messages wrap
+  // instead of running into the screen edge.
+  max-width: calc(100vw - 2 * var(--space-6));
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   gap: var(--space-2);
   z-index: 1000;
 }
