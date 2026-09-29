@@ -1,21 +1,33 @@
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { environment } from '../../../environments/environment';
 import { ProductList } from './product-list';
 
 describe('ProductList', () => {
-  let component: ProductList;
   let fixture: ComponentFixture<ProductList>;
+  let httpMock: HttpTestingController;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  beforeEach(() => {
+    TestBed.configureTestingModule({
       imports: [ProductList],
-    }).compileComponents();
+      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
+    });
 
     fixture = TestBed.createComponent(ProductList);
-    component = fixture.componentInstance;
-    await fixture.whenStable();
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  // Fails the test if any request was made that the test didn't expect and answer.
+  afterEach(() => httpMock.verify());
+
+  it('should create and load products on init', () => {
+    fixture.detectChanges(); // runs ngOnInit, which requests the product list
+
+    // The fake backend never answers on its own, so the test answers the request.
+    httpMock.expectOne(`${environment.apiUrl}/products`).flush([]);
+
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });
