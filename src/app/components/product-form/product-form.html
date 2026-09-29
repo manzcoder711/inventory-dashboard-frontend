@@ -3,83 +3,83 @@
 @if (loading()) {
   <p>Loading...</p>
 } @else {
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <div>
-    <label for="name">Name</label>
-    <input
-      id="name"
-      type="text"
-      formControlName="name"
-      [attr.aria-invalid]="showError('name') ? 'true' : null"
-      [attr.aria-describedby]="showError('name') ? 'name-error' : null"
-    />
-    @if (showError('name')) {
-      <span id="name-error" class="field-error">Name is required (max 200 characters).</span>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div>
+      <label for="name">Name</label>
+      <input
+        id="name"
+        type="text"
+        formControlName="name"
+        [attr.aria-invalid]="showError('name') ? 'true' : null"
+        [attr.aria-describedby]="showError('name') ? 'name-error' : null"
+      />
+      @if (showError('name')) {
+        <span id="name-error" class="field-error">Name is required (max 200 characters).</span>
+      }
+    </div>
+
+    <div>
+      <label for="description">Description</label>
+      <textarea id="description" formControlName="description"></textarea>
+    </div>
+
+    <div>
+      <label for="sku">SKU</label>
+      <input
+        id="sku"
+        type="text"
+        formControlName="sku"
+        (input)="skuError.set(null)"
+        [attr.aria-invalid]="showError('sku') ? 'true' : null"
+        [attr.aria-describedby]="showError('sku') ? 'sku-error' : null"
+      />
+      @if (skuError()) {
+        <span id="sku-error" class="field-error">{{ skuError() }}</span>
+      } @else if (showError('sku')) {
+        <span id="sku-error" class="field-error">SKU is required (max 100 characters).</span>
+      }
+    </div>
+
+    <div>
+      <label for="price">Price</label>
+      <input
+        id="price"
+        type="number"
+        step="0.01"
+        formControlName="price"
+        [attr.aria-invalid]="showError('price') ? 'true' : null"
+        [attr.aria-describedby]="showError('price') ? 'price-error' : null"
+      />
+      @if (showError('price')) {
+        <span id="price-error" class="field-error">Price must be 0 or greater.</span>
+      }
+    </div>
+
+    <div>
+      <label for="quantityInStock">Quantity in Stock</label>
+      <input
+        id="quantityInStock"
+        type="number"
+        formControlName="quantityInStock"
+        [attr.aria-invalid]="showError('quantityInStock') ? 'true' : null"
+        [attr.aria-describedby]="showError('quantityInStock') ? 'quantityInStock-error' : null"
+      />
+      @if (showError('quantityInStock')) {
+        <span id="quantityInStock-error" class="field-error">Quantity must be 0 or greater.</span>
+      }
+    </div>
+
+    <div>
+      <label for="category">Category</label>
+      <input id="category" type="text" formControlName="category" />
+    </div>
+
+    @if (error()) {
+      <p class="form-error" role="alert">{{ error() }}</p>
     }
-  </div>
 
-  <div>
-    <label for="description">Description</label>
-    <textarea id="description" formControlName="description"></textarea>
-  </div>
-
-  <div>
-    <label for="sku">SKU</label>
-    <input
-      id="sku"
-      type="text"
-      formControlName="sku"
-      (input)="skuError.set(null)"
-      [attr.aria-invalid]="showError('sku') ? 'true' : null"
-      [attr.aria-describedby]="showError('sku') ? 'sku-error' : null"
-    />
-    @if (skuError()) {
-      <span id="sku-error" class="field-error">{{ skuError() }}</span>
-    } @else if (showError('sku')) {
-      <span id="sku-error" class="field-error">SKU is required (max 100 characters).</span>
-    }
-  </div>
-
-  <div>
-    <label for="price">Price</label>
-    <input
-      id="price"
-      type="number"
-      step="0.01"
-      formControlName="price"
-      [attr.aria-invalid]="showError('price') ? 'true' : null"
-      [attr.aria-describedby]="showError('price') ? 'price-error' : null"
-    />
-    @if (showError('price')) {
-      <span id="price-error" class="field-error">Price must be 0 or greater.</span>
-    }
-  </div>
-
-  <div>
-    <label for="quantityInStock">Quantity in Stock</label>
-    <input
-      id="quantityInStock"
-      type="number"
-      formControlName="quantityInStock"
-      [attr.aria-invalid]="showError('quantityInStock') ? 'true' : null"
-      [attr.aria-describedby]="showError('quantityInStock') ? 'quantityInStock-error' : null"
-    />
-    @if (showError('quantityInStock')) {
-      <span id="quantityInStock-error" class="field-error">Quantity must be 0 or greater.</span>
-    }
-  </div>
-
-  <div>
-    <label for="category">Category</label>
-    <input id="category" type="text" formControlName="category" />
-  </div>
-
-  @if (error()) {
-    <p class="form-error" role="alert">{{ error() }}</p>
-  }
-
-  <button type="submit" [disabled]="submitting()">
-    {{ submitting() ? 'Saving...' : (productId() ? 'Update Product' : 'Save Product') }}
-  </button>
-</form>
+    <button type="submit" [disabled]="submitting()">
+      {{ submitting() ? 'Saving...' : productId() ? 'Update Product' : 'Save Product' }}
+    </button>
+  </form>
 }

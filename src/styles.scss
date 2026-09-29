@@ -1,15 +1,15 @@
 /* Design tokens — see DESIGN.md for the decisions behind these values.
    Defined once here; components reference var(--token-name), never hardcode. */
 :root {
-  --color-surface: #FFFFFF;
-  --color-surface-alt: #F1F5F9;
-  --color-text: #1E293B;
+  --color-surface: #ffffff;
+  --color-surface-alt: #f1f5f9;
+  --color-text: #1e293b;
   --color-text-muted: #475569;
-  --color-primary: #1D4ED8;
-  --color-destructive: #B91C1C;
-  --color-accent: #D97706;
+  --color-primary: #1d4ed8;
+  --color-destructive: #b91c1c;
+  --color-accent: #d97706;
 
-  --font-family-base: -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-family-base: -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-size-caption: 12px;
   --font-size-body: 14px;
   --font-size-base: 16px;
@@ -39,7 +39,9 @@ body {
   line-height: var(--line-height-body);
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   color: var(--color-text);
 }
 
