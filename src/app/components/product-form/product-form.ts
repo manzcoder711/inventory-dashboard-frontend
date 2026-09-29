@@ -1,4 +1,6 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from '../../services/product.service';
@@ -16,6 +18,7 @@ export class ProductForm implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private toastService = inject(ToastService);
+  private destroyRef = inject(DestroyRef);
 
   productId = signal<number | null>(null);
   submitting = signal(false);
@@ -52,24 +55,27 @@ export class ProductForm implements OnInit {
     this.productId.set(id);
     this.loading.set(true);
 
-    this.productService.getById(id).subscribe({
-      next: (product) => {
-        this.form.patchValue({
-          name: product.name,
-          description: product.description,
-          sku: product.sku,
-          price: product.price,
-          quantityInStock: product.quantityInStock,
-          category: product.category,
-        });
-        this.loading.set(false);
-      },
-      error: (err) => {
-        this.error.set('Failed to load product.');
-        this.loading.set(false);
-        console.error(err);
-      },
-    });
+    this.productService
+      .getById(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (product) => {
+          this.form.patchValue({
+            name: product.name,
+            description: product.description,
+            sku: product.sku,
+            price: product.price,
+            quantityInStock: product.quantityInStock,
+            category: product.category,
+          });
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.error.set('Failed to load product.');
+          this.loading.set(false);
+          console.error(err);
+        },
+      });
   }
 
   onSubmit(): void {
@@ -97,12 +103,12 @@ export class ProductForm implements OnInit {
       ? this.productService.update(id, { id, ...payload })
       : this.productService.create(payload);
 
-    request.subscribe({
+    request.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.toastService.show(id ? 'Product updated' : 'Product saved');
         this.router.navigate(['/']);
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         if (err.status === 409) {
           this.skuError.set(err.error?.message ?? 'That SKU is already in use.');
         } else {

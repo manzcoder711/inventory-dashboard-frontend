@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
@@ -17,6 +18,7 @@ export class Login {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
   readonly demoEmail = DEMO_EMAIL;
   readonly demoPassword = DEMO_PASSWORD;
@@ -53,18 +55,21 @@ export class Login {
     this.submitting.set(true);
     this.error.set(null);
 
-    this.authService.login(email, password).subscribe({
-      next: () => {
-        this.router.navigate(['/']);
-      },
-      error: (err: HttpErrorResponse) => {
-        this.error.set(
-          err.status === 401
-            ? 'Invalid email or password.'
-            : "Couldn't reach the server. Please try again in a moment.",
-        );
-        this.submitting.set(false);
-      },
-    });
+    this.authService
+      .login(email, password)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/']);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.error.set(
+            err.status === 401
+              ? 'Invalid email or password.'
+              : "Couldn't reach the server. Please try again in a moment.",
+          );
+          this.submitting.set(false);
+        },
+      });
   }
 }

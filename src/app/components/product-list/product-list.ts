@@ -1,4 +1,5 @@
-import { Component, OnInit, computed, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, signal, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CurrencyPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Product } from '../../models/product';
@@ -17,6 +18,10 @@ const LOW_STOCK_THRESHOLD = 10;
   templateUrl: './product-list.html',
 })
 export class ProductList implements OnInit {
+  private productService = inject(ProductService);
+  private toastService = inject(ToastService);
+  private destroyRef = inject(DestroyRef);
+
   products = signal<Product[]>([]);
   loading = signal(true);
   error = signal<string | null>(null);
@@ -46,23 +51,21 @@ export class ProductList implements OnInit {
     });
   });
 
-  constructor(
-    private productService: ProductService,
-    private toastService: ToastService,
-  ) {}
-
   ngOnInit(): void {
-    this.productService.getAll().subscribe({
-      next: (products) => {
-        this.products.set(products);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        this.error.set('Failed to load products. Is the API running?');
-        this.loading.set(false);
-        console.error(err);
-      },
-    });
+    this.productService
+      .getAll()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (products) => {
+          this.products.set(products);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.error.set('Failed to load products. Is the API running?');
+          this.loading.set(false);
+          console.error(err);
+        },
+      });
   }
 
   onSearch(value: string): void {
@@ -103,17 +106,20 @@ export class ProductList implements OnInit {
 
     this.deletingId.set(product.id);
 
-    this.productService.delete(product.id).subscribe({
-      next: () => {
-        this.products.update((products) => products.filter((p) => p.id !== product.id));
-        this.deletingId.set(null);
-        this.toastService.show('Product deleted');
-      },
-      error: (err) => {
-        this.error.set('Failed to delete product.');
-        this.deletingId.set(null);
-        console.error(err);
-      },
-    });
+    this.productService
+      .delete(product.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.products.update((products) => products.filter((p) => p.id !== product.id));
+          this.deletingId.set(null);
+          this.toastService.show('Product deleted');
+        },
+        error: (err) => {
+          this.error.set('Failed to delete product.');
+          this.deletingId.set(null);
+          console.error(err);
+        },
+      });
   }
 }
