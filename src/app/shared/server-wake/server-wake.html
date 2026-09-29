@@ -1,0 +1,6 @@
+<!-- The live region is always present, so screen readers announce the message when it appears. -->
+<div role="status">
+  @if (serverWake.waking()) {
+    <p class="wake-message">Waking up the free-tier server — this can take up to a minute.</p>
+  }
+</div>
