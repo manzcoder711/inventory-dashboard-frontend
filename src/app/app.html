@@ -1,3 +1,13 @@
-<app-server-wake />
-<router-outlet />
+<header class="app-header">
+  <span class="app-title">Inventory Dashboard</span>
+  @if (auth.isAuthenticated()) {
+    <button type="button" (click)="signOut()">Sign out</button>
+  }
+</header>
+
+<main class="app-main">
+  <app-server-wake />
+  <router-outlet />
+</main>
+
 <app-toast />

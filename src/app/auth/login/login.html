@@ -1,16 +1,21 @@
-<h2>Log In</h2>
+<h2>Sign in</h2>
 
 <p>You're looking at a live demo — feel free to add, edit, or delete products.</p>
 
-<button type="button" (click)="loginAsDemo()" [disabled]="submitting()">
+<button
+  type="button"
+  class="button-primary demo-button"
+  (click)="loginAsDemo()"
+  [disabled]="submitting()"
+>
   {{ submitting() ? 'Signing in...' : 'Sign in as demo user' }}
 </button>
 <p class="demo-credentials">Demo credentials: {{ demoEmail }} / {{ demoPassword }}</p>
 
-<hr />
+<p class="divider">or sign in with email</p>
 
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <div>
+  <div class="field">
     <label for="email">Email</label>
     <input
       id="email"
@@ -24,7 +29,7 @@
     }
   </div>
 
-  <div>
+  <div class="field">
     <label for="password">Password</label>
     <input
       id="password"
@@ -42,7 +47,7 @@
     <p class="form-error" role="alert">{{ error() }}</p>
   }
 
-  <button type="submit" [disabled]="submitting()">
-    {{ submitting() ? 'Logging in...' : 'Log In' }}
+  <button type="submit" class="submit-button" [disabled]="submitting()">
+    {{ submitting() ? 'Signing in...' : 'Sign in' }}
   </button>
 </form>

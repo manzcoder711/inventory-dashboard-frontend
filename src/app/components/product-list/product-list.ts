@@ -12,6 +12,7 @@ type SortDirection = 'asc' | 'desc';
 const LOW_STOCK_THRESHOLD = 10;
 
 @Component({
+  host: { class: 'page-card' },
   imports: [CurrencyPipe, RouterLink],
   selector: 'app-product-list',
   styleUrl: './product-list.scss',

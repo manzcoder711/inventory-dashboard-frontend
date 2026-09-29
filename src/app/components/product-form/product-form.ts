@@ -2,12 +2,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { ToastService } from '../../shared/toast/toast.service';
 
 @Component({
-  imports: [ReactiveFormsModule],
+  host: { class: 'page-card page-card--medium' },
+  imports: [ReactiveFormsModule, RouterLink],
   selector: 'app-product-form',
   styleUrl: './product-form.scss',
   templateUrl: './product-form.html',

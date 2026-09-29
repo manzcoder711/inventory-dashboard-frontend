@@ -1,5 +1,41 @@
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.page-header h2 {
+  margin: 0;
+}
+
 .toolbar {
   margin: var(--space-4) 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+}
+
+th {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+// The skeleton rows are placeholders, not data: no dividers between them.
+.skeleton td {
+  border-bottom: none;
 }
 
 .toolbar input[type='search'] {
@@ -16,7 +52,12 @@
 .sort-button {
   background: none;
   border: none;
+  min-height: 0;
   padding: 0;
+  gap: var(--space-1); // flex layout drops the space before the sort arrow
+  font-weight: inherit;
+  text-transform: inherit; // buttons don't inherit these by default
+  letter-spacing: inherit;
   font: inherit;
   color: inherit;
   text-align: inherit;
@@ -49,6 +90,16 @@
 
 .row-actions a {
   margin-right: var(--space-2);
+}
+
+.row-actions button {
+  min-height: 28px;
+  padding: 0 var(--space-3);
+}
+
+// Quiet by default so a table full of them doesn't shout; red text marks it as destructive.
+.delete-button {
+  color: var(--color-destructive);
 }
 
 tr.low-stock {

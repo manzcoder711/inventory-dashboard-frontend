@@ -1,6 +1,7 @@
-<h2>Products</h2>
-
-<a routerLink="/products/new">+ Add Product</a>
+<div class="page-header">
+  <h2>Products</h2>
+  <a routerLink="/products/new" class="button button-primary">+ Add Product</a>
+</div>
 
 <div class="toolbar">
   <input
@@ -73,6 +74,7 @@
               <a [routerLink]="['/products', product.id, 'edit']">Edit</a>
               <button
                 type="button"
+                class="delete-button"
                 (click)="deleteProduct(product)"
                 [disabled]="deletingId() === product.id"
               >

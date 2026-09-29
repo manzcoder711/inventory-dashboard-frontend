@@ -9,6 +9,7 @@ const DEMO_EMAIL = 'demo@example.com';
 const DEMO_PASSWORD = 'Demo123!';
 
 @Component({
+  host: { class: 'page-card page-card--narrow' },
   imports: [ReactiveFormsModule],
   selector: 'app-login',
   styleUrl: './login.scss',

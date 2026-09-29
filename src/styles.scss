@@ -8,6 +8,11 @@
   --color-primary: #1d4ed8;
   --color-destructive: #b91c1c;
   --color-accent: #d97706;
+  --color-border: #cbd5e1;
+  --color-on-primary: #ffffff;
+
+  --radius: 6px;
+  --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
 
   --font-family-base: -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-size-caption: 12px;
@@ -47,6 +52,114 @@ h3 {
 
 a {
   color: var(--color-primary);
+}
+
+/* Each page sits on a white card. Pages opt in with host: { class: 'page-card' }. */
+.page-card {
+  display: block;
+  margin: 0 auto;
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+
+.page-card--narrow {
+  max-width: 420px;
+}
+
+.page-card--medium {
+  max-width: 560px;
+}
+
+@media (min-width: 768px) {
+  .page-card {
+    padding: var(--space-6);
+  }
+}
+
+.page-card > h2:first-child {
+  margin-top: 0;
+}
+
+/* Form fields: label stacked above its input, error text underneath. */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+
+.field label {
+  font-weight: 600;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-text-muted);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+
+textarea {
+  resize: vertical;
+}
+
+input[aria-invalid='true'] {
+  border-color: var(--color-destructive);
+}
+
+/* Buttons, and links that should look like buttons (.button). The default is the
+   secondary style; .button-primary is the one main action on a page.
+   White on --color-primary is 6.7:1. */
+button,
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled),
+.button:hover {
+  background: var(--color-surface-alt);
+}
+
+.button-primary {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+button.button-primary:hover:not(:disabled),
+.button-primary:hover {
+  background: color-mix(in srgb, var(--color-primary) 85%, black);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
 }
 
 /* One consistent keyboard focus ring for every focusable element.
