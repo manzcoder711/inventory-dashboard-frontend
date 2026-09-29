@@ -63,13 +63,20 @@ export class Login {
           this.router.navigate(['/']);
         },
         error: (err: HttpErrorResponse) => {
-          this.error.set(
-            err.status === 401
-              ? 'Invalid email or password.'
-              : "Couldn't reach the server. Please try again in a moment.",
-          );
+          this.error.set(loginErrorMessage(err.status));
           this.submitting.set(false);
         },
       });
+  }
+}
+
+function loginErrorMessage(status: number): string {
+  switch (status) {
+    case 401:
+      return 'Invalid email or password.';
+    case 429:
+      return 'Too many sign-in attempts. Please wait a minute and try again.';
+    default:
+      return "Couldn't reach the server. Please try again in a moment.";
   }
 }
