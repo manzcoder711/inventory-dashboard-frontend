@@ -1,0 +1,3 @@
+# Always check files out with LF, even on Windows. Prettier (npm run format:check) expects LF,
+# so a CRLF checkout makes every file fail the check.
+* text=auto eol=lf
