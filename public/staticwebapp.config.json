@@ -4,7 +4,7 @@
     "exclude": ["/*.{js,css,ico,png,svg,jpg,webp,json,txt,map,woff,woff2}"]
   },
   "globalHeaders": {
-    "Content-Security-Policy-Report-Only": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://inventory-api-forin-abbjggaqh3agf2ce.southindia-01.azurewebsites.net; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
+    "Content-Security-Policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://inventory-api-forin-abbjggaqh3agf2ce.southindia-01.azurewebsites.net; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
     "X-Frame-Options": "DENY",
     "Permissions-Policy": "camera=(), microphone=(), geolocation=()"
   }

@@ -138,9 +138,10 @@ four steps stops the run before anything is built or deployed. Pull requests run
 Only Dependabot's are kept from deploying, since they don't get the repo's secrets.
 
 [`public/staticwebapp.config.json`](public/staticwebapp.config.json) makes deep links and page
-refreshes work (every path falls back to `index.html`) and sets the security headers. The
-`Content-Security-Policy` is currently in **report-only** mode: browsers log anything it would block
-but don't block it yet.
+refreshes work (every path falls back to `index.html`) and sets the security headers, including an
+enforced `Content-Security-Policy` that only lets the app load scripts, styles and data from itself
+and its own API. It was first rolled out in report-only mode and checked against a full walkthrough
+of the live site (sign in, add, edit, delete, sign out) with no violations before being enforced.
 
 ## Deliberately not built
 
